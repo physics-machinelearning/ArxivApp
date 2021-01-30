@@ -15,6 +15,8 @@ class Article(models.Model):
 
     category = models.CharField(max_length=100)
 
+    big_cat = models.CharField(max_length=100)
+
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=['title', 'author'],

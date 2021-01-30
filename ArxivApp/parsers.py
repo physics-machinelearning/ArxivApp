@@ -8,21 +8,22 @@ from db_tools import InteractArticle
 from config import START, YESTERDAY, TODAY, CATEGORIES
 
 
-def article_parser(START, END, categories):
+def article_parser(START, END, categories_dict):
     ia = InteractArticle()
-    for category in categories:
-        result_df = _article_parser_category(START, END, category)
-        for index, row in result_df.iterrows():
-            title = row['title']
-            author = row['author']
-            arxiv_url = row['arxiv_url']
-            summary = row['summary']
-            published = row['published']
-            published = datetime.datetime.strptime(published, '%Y-%m-%dT%H:%M:%SZ')
-            ia.insert_article(
-                title, author, arxiv_url, summary, published, category
-            )
-        ia.save_article()
+    for big_cat, categories in categories_dict.items():
+        for category in categories:
+            result_df = _article_parser_category(START, END, category)
+            for index, row in result_df.iterrows():
+                title = row['title']
+                author = row['author']
+                arxiv_url = row['arxiv_url']
+                summary = row['summary']
+                published = row['published']
+                published = datetime.datetime.strptime(published, '%Y-%m-%dT%H:%M:%SZ')
+                ia.insert_article(
+                    title, author, arxiv_url, summary, published, category, big_cat
+                )
+            ia.save_article()
 
 
 def _article_parser_category(START, END, category):

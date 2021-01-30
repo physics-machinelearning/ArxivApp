@@ -15,7 +15,8 @@ class InteractArticle:
         self.articles = []
 
     def insert_article(
-        self, title, author, arxiv_url, summary, published, category
+        self, title, author, arxiv_url, summary, published, category,
+        big_cat
         ):
         article = Article(
             title=title,
@@ -23,7 +24,8 @@ class InteractArticle:
             arxiv_url=arxiv_url,
             summary=summary,
             published=published,
-            category=category
+            category=category,
+            big_cat=big_cat
         )
         self.articles.append(article)
     
