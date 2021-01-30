@@ -1,3 +1,8 @@
 from django.shortcuts import render
 
-# Create your views here.
+from arxivapp.config import CATEGORIES
+
+
+def category_list(request):
+    context = {'categories': CATEGORIES.keys()}
+    return render(request, 'category.html', context)
