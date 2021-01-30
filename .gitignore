@@ -1,0 +1,6 @@
+dev/
+__pycache__/
+migrations/
+
+Pipfile.lock
+db.sqlite3
