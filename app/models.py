@@ -13,6 +13,8 @@ class Article(models.Model):
 
     published = models.DateField()
 
+    category = models.CharField(max_length=100)
+
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=['title', 'author'],

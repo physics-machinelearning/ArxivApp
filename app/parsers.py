@@ -4,7 +4,7 @@ import pandas as pd
 import arxiv
 
 from db_tools import InteractArticle
-from config import START, END, YESTARDAY, TODAY, CATEGORIES
+from config import START, YESTARDAY, TODAY, CATEGORIES
 
 
 def article_parser(START, END, categories):
@@ -38,7 +38,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.arg1 == 'all':
-        article_parser(START, END, CATEGORIES)
+        article_parser(START, TODAY, CATEGORIES)
     elif args.arg1 == 'today':
         article_parser(YESTARDAY, TODAY, CATEGORIES)
     else:
