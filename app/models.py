@@ -36,15 +36,15 @@ class UserArticle(models.Model):
         ]
 
 
-class Category(models.Model):
-    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+# class Category(models.Model):
+#     article = models.ForeignKey(Article, on_delete=models.CASCADE)
 
-    name = models.CharField(max_length=100)
+#     name = models.CharField(max_length=100)
 
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=['article', 'name'],
-                name='unique_category'
-                )
-        ]
+#     class Meta:
+#         constraints = [
+#             models.UniqueConstraint(
+#                 fields=['article', 'name'],
+#                 name='unique_category'
+#                 )
+#         ]
