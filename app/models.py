@@ -11,7 +11,7 @@ class Article(models.Model):
 
     summary = models.CharField(max_length=1000)
 
-    updated = models.DateField()
+    published = models.DateField()
 
     class Meta:
         constraints = [
