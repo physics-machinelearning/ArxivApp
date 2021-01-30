@@ -1,5 +1,6 @@
 from .models import Article
 
+
 class InteractArticle:
     def __init__(self):
         self.articles = []
