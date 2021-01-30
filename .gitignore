@@ -1,6 +1,7 @@
 dev/
 __pycache__/
 migrations/
+.DS_Store/
 
 Pipfile.lock
 db.sqlite3
