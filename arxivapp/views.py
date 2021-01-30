@@ -11,6 +11,6 @@ def category_list(request):
 
 def article_list(request, category):
     ia = InteractArticle()
-    articles = ia.get_articles(cateogry)
+    articles = ia.get_articles(category)
     context = {'articles': articles}
     return render(request, 'articles.html', context)

@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from arxivapp.views import category_list
+from arxivapp.views import category_list, article_list
 
 urlpatterns = [
     path('admin/', admin.site.urls),

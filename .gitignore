@@ -5,3 +5,4 @@ migrations/
 
 Pipfile.lock
 db.sqlite3
+*.icloud
