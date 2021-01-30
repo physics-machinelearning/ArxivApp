@@ -15,3 +15,6 @@ class InteractArticle:
     
     def save_article(self):
         Article.objects.bulk_create(self.articles)
+
+    def get_article_num(self):
+        return len(Article.objects.all())
