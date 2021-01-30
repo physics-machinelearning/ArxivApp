@@ -21,4 +21,5 @@ from arxivapp.views import category_list
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', category_list, name='category'),
+    path('<category>', article_list, name='articles'),
 ]
