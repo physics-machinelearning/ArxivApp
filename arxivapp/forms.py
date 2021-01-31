@@ -1,25 +1,25 @@
 from django import forms
 
 YEAR_CHOICES = tuple(
-    [i+2010 for i in range(12)]
+    [(i+2010, i+2010) for i in range(12)]
 )
 
 class ArticleSearchForm(forms.Form):
     keyword = forms.CharField(
-        label='keyword', max_length=100, required=False
+        label='Keyword', max_length=100, required=False
     )
     start_year = forms.ChoiceField(
-        label='year',
+        label='From',
         widget=forms.Select,
         choices=YEAR_CHOICES,
-        requred=False
+        required=False
     )
     end_year = forms.ChoiceField(
-        label='year',
+        label='To',
         widget=forms.Select,
         choices=YEAR_CHOICES,
-        requred=False
+        required=False
     )
-    author = = forms.CharField(
-        label='keyword', max_length=100, required=False
+    author = forms.CharField(
+        label='Author', max_length=100, required=False
     )

@@ -27,6 +27,39 @@
                     </div>
                     
                     <!-- Content Row -->
+                    <form method="POST">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-3">
+                                    {% csrf_token %}
+                                    {{ form.as_p }}
+                                </div>
+                                <div class="col-9">
+                                    <button type="submit">Search</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="row">
+                        <div class="pagination">
+                            <span class="step-links">
+                                {% if articles.has_previous %}
+                                    <a href="?page=1">&laquo; first</a>
+                                    <a href="?page={{ articles.previous_page_number }}">previous</a>
+                                {% endif %}
+                        
+                                <span class="current">
+                                    Page {{ articles.number }} of {{ articles.paginator.num_pages }}.
+                                </span>
+                        
+                                {% if articles.has_next %}
+                                    <a href="?page={{ articles.next_page_number }}">next</a>
+                                    <a href="?page={{ articles.paginator.num_pages }}">last &raquo;</a>
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
                     <div class="row">
                         {% for item in articles %}
                         <div class="card" style="width: 72rem;">
@@ -40,7 +73,7 @@
                                     {{ item.summary }}
                                 </ul>
                                 <ul>
-                                    published at {{ item.published}}
+                                    published at {{ item.published_str }}
                                 </ul>
                                 <ul>
                                     author: {{ item.author }}
@@ -52,6 +85,25 @@
                         </div>
                         {% endfor %}
                     </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="pagination">
+                    <span class="step-links">
+                        {% if articles.has_previous %}
+                            <a href="?page=1">&laquo; first</a>
+                            <a href="?page={{ articles.previous_page_number }}">previous</a>
+                        {% endif %}
+                
+                        <span class="current">
+                            Page {{ articles.number }} of {{ articles.paginator.num_pages }}.
+                        </span>
+                
+                        {% if articles.has_next %}
+                            <a href="?page={{ articles.next_page_number }}">next</a>
+                            <a href="?page={{ articles.paginator.num_pages }}">last &raquo;</a>
+                        {% endif %}
+                    </span>
                 </div>
             </div>
             <!-- End of Main Content -->
