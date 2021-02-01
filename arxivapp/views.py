@@ -6,6 +6,14 @@ from arxivapp.db_tools import InteractArticle
 from arxivapp.forms import ArticleSearchForm
 
 
+def login(request):
+    return render(request, 'login.html')
+
+
+def register(request):
+    return render(request, 'register.html')
+
+
 def category_list(request):
     context = {'categories': CATEGORIES.keys()}
     return render(request, 'category.html', context)

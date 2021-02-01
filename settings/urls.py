@@ -16,11 +16,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from arxivapp.views import category_list, article_list, article_detail
+from arxivapp.views import (
+    category_list, article_list, article_detail, login,
+    register
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('login/', login, name='login'),
+    path('register/', register, name='register'),
     path('', category_list, name='category'),
-    path('<category>', article_list, name='articles'),
+    path('articles/<category>', article_list, name='articles'),
     path('article/<id>', article_detail, name='article_detail'),
 ]
