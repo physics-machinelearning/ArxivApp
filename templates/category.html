@@ -32,7 +32,9 @@
                         <div class="card" style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title">
-                                    {{ item }}
+                                    <a href="{% url 'articles' item %}">
+                                        {{ item }}
+                                    </a>
                                 </h5>
                             </div>
                         </div>

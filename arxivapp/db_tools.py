@@ -1,7 +1,10 @@
 import sys
 import os
+import datetime
+
 import django
 from django.db.utils import IntegrityError
+from django.db.models import Q
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings.settings')
@@ -41,3 +44,32 @@ class InteractArticle:
 
     def get_article_num(self):
         return len(Article.objects.all())
+
+    def get_articles(self, category):
+        articles = Article.objects.filter(big_cat=category).all()
+        return articles
+
+    def search_articles(self, keyword, start, end, author):
+        if keyword:
+            articles = Article.objects.filter(
+                Q(title__contains=keyword) |
+                Q(summary__contains=keyword)
+            )
+        else:
+            articles = Article.objects.filter()
+        if start:
+            start = datetime.datetime(
+                year=int(start), month=1, day=1
+                )
+            articles = articles.filter(published__gte=start)
+        if end:
+            end = datetime.datetime(
+                year=int(end)+1, month=1, day=1
+                )
+            articles = articles.filter(published__lte=end)
+        if author:
+            articles = articles.filter(author__contains=author)
+        articles = articles.all().order_by('published').distinct()
+        articles = articles.values()
+        articles = list(articles)
+        return articles
