@@ -61,15 +61,15 @@ class InteractArticle:
             start = datetime.datetime(
                 year=int(start), month=1, day=1
                 )
-            articles = articles.filter(_published__gte=start)
+            articles = articles.filter(published__gte=start)
         if end:
             end = datetime.datetime(
                 year=int(end)+1, month=1, day=1
                 )
-            articles = articles.filter(_published__lte=end)
+            articles = articles.filter(published__lte=end)
         if author:
-            articles = articles.filter(author_contains=author)
-        articles = articles.all().order_by('_published').distinct()
+            articles = articles.filter(author__contains=author)
+        articles = articles.all().order_by('published').distinct()
         articles = articles.values()
         articles = list(articles)
         return articles

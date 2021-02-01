@@ -11,7 +11,7 @@ class Article(models.Model):
 
     summary = models.CharField(max_length=1000)
 
-    _published = models.DateField()
+    published = models.DateField()
 
     category = models.CharField(max_length=100)
 
@@ -22,14 +22,6 @@ class Article(models.Model):
             models.UniqueConstraint(fields=['title', 'author'],
             name='unique_article')
         ]
-    
-    @property
-    def published(self):
-        return str(self._published)
-
-    @published.setter
-    def published(self, date):
-        self._published = date
 
 
 class UserArticle(models.Model):

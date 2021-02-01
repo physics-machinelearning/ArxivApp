@@ -36,17 +36,14 @@ def article_list(request, category):
             articles = ia.search_articles(
                 keyword, start_year, end_year, author
             )
-            from django.core import serializers
-            # articles = serializers.serialize("json", articles)
+            for article in articles:
+                article['published'] = str(article['published'])
             request.session['queryset'] = articles
             paginator = Paginator(articles, num)
             page_int = 1
             page = paginator.get_page(page_int)
-            # page = list(
-            #     map(lambda article: article.as_dict(), list(page))
-            # )
             context = {
                 'form': form,
-                'articles': list(page)
+                'articles': page
             }
             return render(request, 'articles.html', context)
