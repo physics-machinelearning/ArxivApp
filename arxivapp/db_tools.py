@@ -45,6 +45,10 @@ class InteractArticle:
     def get_article_num(self):
         return len(Article.objects.all())
 
+    def get_article(self, id):
+        article = Article.objects.get(id=id)
+        return article
+
     def get_articles(self, category):
         articles = Article.objects.filter(big_cat=category).all()
         return articles

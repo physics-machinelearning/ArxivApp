@@ -47,3 +47,13 @@ def article_list(request, category):
                 'articles': page
             }
             return render(request, 'articles.html', context)
+
+
+def article_detail(request, id):
+    if request.method == 'GET':
+        ia = InteractArticle()
+        article = ia.get_article(id)
+        context = {
+            'article': article
+        }
+        return render(request, 'article_detail.html', context)
