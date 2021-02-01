@@ -38,15 +38,9 @@ class UserArticle(models.Model):
         ]
 
 
-# class Category(models.Model):
-#     article = models.ForeignKey(Article, on_delete=models.CASCADE)
+class Post(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
 
-#     name = models.CharField(max_length=100)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
-#     class Meta:
-#         constraints = [
-#             models.UniqueConstraint(
-#                 fields=['article', 'name'],
-#                 name='unique_category'
-#                 )
-#         ]
+    content = models.CharField(max_length=2000)
