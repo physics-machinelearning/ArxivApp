@@ -1,5 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
 
 from arxivapp.config import CATEGORIES
 from arxivapp.db_tools import InteractArticle
@@ -7,11 +9,42 @@ from arxivapp.forms import ArticleSearchForm
 
 
 def login(request):
-    return render(request, 'login.html')
+    if request.method == 'GET':
+        return render(request, 'login.html')
+    elif request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        user = authenticate(username=email, password=password)
+        if user is not None:
+            return redirect('category')
+        else:
+            return render(request, 'login.html')
+
 
 
 def register(request):
-    return render(request, 'register.html')
+    if request.method == 'GET':
+        return render(request, 'register.html')
+    elif request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('password')
+        if email and password and confirm_password:
+            if password == confirm_password:
+                user = authenticate(username=email, password=password)
+                if user is None:
+                    user = User.objects.create_user(
+                        username=email,
+                        password=password
+                    )
+                    user.save()
+                    return redirect('login')
+                else:
+                    return redirect('login')
+            else:
+                return render(request, 'register.html')
+        else:
+            return render(request, 'register.html')
 
 
 def category_list(request):
