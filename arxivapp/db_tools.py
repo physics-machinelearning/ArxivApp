@@ -90,6 +90,22 @@ class InteractPost:
         ).all()
         return posts
 
+    def get_my_articles(self):
+        posts = Post.objects.filter(
+            user=self.user
+        ).all()
+        articles = [post.article for post in posts]
+        i = 0
+        while True:
+            article = articles[i]
+            if article in articles[:i]:
+                articles.pop(i)
+                i -= 1
+            if i == len(articles)-1:
+                break
+            i += 1
+        return articles
+
     def get_other_posts(self, article):
         posts = Post.objects\
             .filter(article=article).exclude(user=self.user).all()
@@ -116,6 +132,13 @@ class InteractUserArticle:
             return True
         else:
             return False
+
+    def get_liked_articles(self):
+        uas = UserArticle.objects.filter(
+            user=self.user
+        ).all()
+        articles = [ua.article for ua in uas]
+        return articles
 
     def like(self, article):
         ua = UserArticle(

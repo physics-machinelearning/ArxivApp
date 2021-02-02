@@ -151,3 +151,31 @@ def article_detail(request, id):
                 'like': like,
             }
             return render(request, 'article_detail.html', context)
+
+
+def my_post_page(request):
+    num = 10
+    if request.method == 'GET':
+        ip = InteractPost(request.user)
+        articles = ip.get_my_articles()
+        paginator = Paginator(articles, num)
+        page_int = request.GET.get('page', 1)
+        page = paginator.get_page(page_int)
+        context = {
+            'articles': page
+        }
+        return render(request, 'my_page.html', context)
+
+
+def my_like_page(request):
+    num = 10
+    if request.method == 'GET':
+        iua = InteractUserArticle(request.user)
+        articles = iua.get_liked_articles()
+        paginator = Paginator(articles, num)
+        page_int = request.GET.get('page', 1)
+        page = paginator.get_page(page_int)
+        context = {
+            'articles': page
+        }
+        return render(request, 'my_page.html', context)
