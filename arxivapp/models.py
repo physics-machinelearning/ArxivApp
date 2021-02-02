@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 
 class Article(models.Model):
@@ -38,15 +39,11 @@ class UserArticle(models.Model):
         ]
 
 
-# class Category(models.Model):
-#     article = models.ForeignKey(Article, on_delete=models.CASCADE)
+class Post(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
 
-#     name = models.CharField(max_length=100)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
-#     class Meta:
-#         constraints = [
-#             models.UniqueConstraint(
-#                 fields=['article', 'name'],
-#                 name='unique_category'
-#                 )
-#         ]
+    content = models.TextField()
+
+    commented_at = models.DateField(default=timezone.now)

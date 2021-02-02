@@ -10,7 +10,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings.settings')
 django.setup()
 
-from arxivapp.models import Article
+from arxivapp.models import Article, Post, UserArticle
 
 
 class InteractArticle:
@@ -45,6 +45,10 @@ class InteractArticle:
     def get_article_num(self):
         return len(Article.objects.all())
 
+    def get_article(self, id):
+        article = Article.objects.get(id=id)
+        return article
+
     def get_articles(self, category):
         articles = Article.objects.filter(big_cat=category).all()
         return articles
@@ -73,3 +77,56 @@ class InteractArticle:
         articles = articles.values()
         articles = list(articles)
         return articles
+
+
+class InteractPost:
+    def __init__(self, user):
+        self.user = user
+
+    def get_my_posts(self, article):
+        posts = Post.objects.filter(
+            article=article,
+            user=self.user
+        ).all()
+        return posts
+
+    def get_other_posts(self, article):
+        posts = Post.objects\
+            .filter(article=article).exclude(user=self.user).all()
+        return posts
+
+    def get_post_instance(self, article):
+        post_instance = Post(
+            article=article,
+            user=self.user
+        )
+        return post_instance
+
+
+class InteractUserArticle:
+    def __init__(self, user):
+        self.user = user
+
+    def get_like(self, article):
+        ua = UserArticle.objects.filter(
+            article=article,
+            user=self.user
+        )
+        if ua:
+            return True
+        else:
+            return False
+
+    def like(self, article):
+        ua = UserArticle(
+            article=article,
+            user=self.user
+        )
+        ua.save()
+
+    def unlike(self, article):
+        ua = UserArticle.objects.filter(
+            article=article,
+            user=self.user
+        )
+        ua.delete()

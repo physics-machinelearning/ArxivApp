@@ -1,9 +1,53 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
 
 from arxivapp.config import CATEGORIES
-from arxivapp.db_tools import InteractArticle
-from arxivapp.forms import ArticleSearchForm
+from arxivapp.db_tools import (
+    InteractArticle, InteractPost, InteractUserArticle
+)
+from arxivapp.forms import ArticleSearchForm, PostForm
+
+
+def login_page(request):
+    if request.method == 'GET':
+        return render(request, 'login.html')
+    elif request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        user = authenticate(username=email, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('category')
+        else:
+            return render(request, 'login.html')
+
+
+
+def register(request):
+    if request.method == 'GET':
+        return render(request, 'register.html')
+    elif request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('password')
+        if email and password and confirm_password:
+            if password == confirm_password:
+                user = authenticate(username=email, password=password)
+                if user is None:
+                    user = User.objects.create_user(
+                        username=email,
+                        password=password
+                    )
+                    user.save()
+                    return redirect('login')
+                else:
+                    return redirect('login')
+            else:
+                return render(request, 'register.html')
+        else:
+            return render(request, 'register.html')
 
 
 def category_list(request):
@@ -47,3 +91,63 @@ def article_list(request, category):
                 'articles': page
             }
             return render(request, 'articles.html', context)
+
+
+def article_detail(request, id):
+    ia = InteractArticle()
+    article = ia.get_article(id)
+    if request.method == 'GET':
+        if request.user.is_authenticated:
+            ip = InteractPost(request.user)
+            other_posts = ip.get_other_posts(article)
+            my_posts = ip.get_my_posts(article)
+            post_instance = ip.get_post_instance(article)
+            iua = InteractUserArticle(request.user)
+            like = iua.get_like(article)
+            context = {
+                'article': article,
+                'posts': other_posts,
+                'my_posts': my_posts,
+                'form': PostForm(instance=post_instance),
+                'like': like
+            }
+            return render(request, 'article_detail.html', context)
+        else:
+            context = {
+                'article': article,
+                'form': PostForm()
+            }
+            return render(request, 'article_detail.html', context)
+    else:
+        iua = InteractUserArticle(request.user)
+        like = iua.get_like(article)
+        ip = InteractPost(request.user)
+        other_posts = ip.get_other_posts(article)
+        my_posts = ip.get_my_posts(article)
+        post_instance = ip.get_post_instance(article)
+        if 'post' in request.POST:
+            form = PostForm(request.POST)
+            if form.is_valid():
+                form.save()
+                context = {
+                    'article': article,
+                    'posts': other_posts,
+                    'my_posts': my_posts,
+                    'form': PostForm(instance=post_instance),
+                    'like': like,
+                }
+                return render(request, 'article_detail.html', context)
+        elif 'like' in request.POST:
+            if like:
+                iua.unlike(article)
+            else:
+                iua.like(article)
+            like = iua.get_like(article)
+            context = {
+                'article': article,
+                'posts': other_posts,
+                'my_posts': my_posts,
+                'form': PostForm(instance=post_instance),
+                'like': like,
+            }
+            return render(request, 'article_detail.html', context)

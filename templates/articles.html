@@ -34,7 +34,7 @@
                                     {% csrf_token %}
                                     {{ form.as_p }}
                                 </div>
-                                <div class="col-9">
+                                <div class="col-3">
                                     <button type="submit">Search</button>
                                 </div>
                             </div>
@@ -63,11 +63,11 @@
                     <div class="row">
                         {% for item in articles %}
                         <div class="card" style="width: 72rem;">
-                            <div class="card-body">
+                            <a href="{% url 'article_detail' item.id %}" class="card-body">
                                 <h5 class="card-title">
                                     {{ item.title }}
                                 </h5>
-                            </div>
+                            </a>
                             <div class="card-text">
                                 <ul>
                                     {{ item.summary }}
