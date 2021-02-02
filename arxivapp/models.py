@@ -43,4 +43,4 @@ class Post(models.Model):
 
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
-    content = models.CharField(max_length=2000)
+    content = models.TextField()

@@ -1,14 +1,14 @@
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login
 
 from arxivapp.config import CATEGORIES
-from arxivapp.db_tools import InteractArticle
-from arxivapp.forms import ArticleSearchForm
+from arxivapp.db_tools import InteractArticle, InteractPost
+from arxivapp.forms import ArticleSearchForm, PostForm
 
 
-def login(request):
+def login_page(request):
     if request.method == 'GET':
         return render(request, 'login.html')
     elif request.method == 'POST':
@@ -16,6 +16,7 @@ def login(request):
         password = request.POST.get('password')
         user = authenticate(username=email, password=password)
         if user is not None:
+            login(request, user)
             return redirect('category')
         else:
             return render(request, 'login.html')
@@ -91,10 +92,32 @@ def article_list(request, category):
 
 
 def article_detail(request, id):
+    ia = InteractArticle()
+    article = ia.get_article(id)
+    ip = InteractPost(request.user)
+    posts = ip.get_posts(article)
+    post_instance = ip.get_post_instance(article)
     if request.method == 'GET':
-        ia = InteractArticle()
-        article = ia.get_article(id)
-        context = {
-            'article': article
-        }
-        return render(request, 'article_detail.html', context)
+        if request.user.is_authenticated:
+            context = {
+                'article': article,
+                'posts': posts,
+                'form': PostForm(instance=post_instance)
+            }
+            return render(request, 'article_detail.html', context)
+        else:
+            context = {
+                'article': article,
+                'form': PostForm()
+            }
+            return render(request, 'article_detail.html', context)
+    else:
+        form = PostForm(request.POST)
+        if form.is_valid():
+            form.save()
+            context = {
+                'article': article,
+                'posts': posts,
+                'form': PostForm(instance=post_instance)
+            }
+            return render(request, 'article_detail.html', context)

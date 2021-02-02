@@ -10,7 +10,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings.settings')
 django.setup()
 
-from arxivapp.models import Article
+from arxivapp.models import Article, Post
 
 
 class InteractArticle:
@@ -77,3 +77,22 @@ class InteractArticle:
         articles = articles.values()
         articles = list(articles)
         return articles
+
+
+class InteractPost:
+    def __init__(self, user):
+        self.user = user
+
+    def get_posts(self, article):
+        posts = Post.objects.filter(
+            article=article,
+            user=self.user
+        ).all()
+        return posts
+
+    def get_post_instance(self, article):
+        post_instance = Post(
+            article=article,
+            user=self.user
+        )
+        return post_instance

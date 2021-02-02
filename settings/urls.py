@@ -17,13 +17,13 @@ from django.contrib import admin
 from django.urls import path
 
 from arxivapp.views import (
-    category_list, article_list, article_detail, login,
+    category_list, article_list, article_detail, login_page,
     register
 )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('login/', login, name='login'),
+    path('login/', login_page, name='login'),
     path('register/', register, name='register'),
     path('', category_list, name='category'),
     path('articles/<category>', article_list, name='articles'),
