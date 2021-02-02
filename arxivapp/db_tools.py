@@ -10,7 +10,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings.settings')
 django.setup()
 
-from arxivapp.models import Article, Post
+from arxivapp.models import Article, Post, UserArticle
 
 
 class InteractArticle:
@@ -83,11 +83,16 @@ class InteractPost:
     def __init__(self, user):
         self.user = user
 
-    def get_posts(self, article):
+    def get_my_posts(self, article):
         posts = Post.objects.filter(
             article=article,
             user=self.user
         ).all()
+        return posts
+
+    def get_other_posts(self, article):
+        posts = Post.objects\
+            .filter(article=article).exclude(user=self.user).all()
         return posts
 
     def get_post_instance(self, article):
@@ -96,3 +101,32 @@ class InteractPost:
             user=self.user
         )
         return post_instance
+
+
+class InteractUserArticle:
+    def __init__(self, user):
+        self.user = user
+
+    def get_like(self, article):
+        ua = UserArticle.objects.filter(
+            article=article,
+            user=self.user
+        )
+        if ua:
+            return True
+        else:
+            return False
+
+    def like(self, article):
+        ua = UserArticle(
+            article=article,
+            user=self.user
+        )
+        ua.save()
+
+    def unlike(self, article):
+        ua = UserArticle.objects.filter(
+            article=article,
+            user=self.user
+        )
+        ua.delete()

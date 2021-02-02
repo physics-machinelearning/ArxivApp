@@ -4,7 +4,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 
 from arxivapp.config import CATEGORIES
-from arxivapp.db_tools import InteractArticle, InteractPost
+from arxivapp.db_tools import (
+    InteractArticle, InteractPost, InteractUserArticle
+)
 from arxivapp.forms import ArticleSearchForm, PostForm
 
 
@@ -94,15 +96,20 @@ def article_list(request, category):
 def article_detail(request, id):
     ia = InteractArticle()
     article = ia.get_article(id)
-    ip = InteractPost(request.user)
-    posts = ip.get_posts(article)
-    post_instance = ip.get_post_instance(article)
     if request.method == 'GET':
         if request.user.is_authenticated:
+            ip = InteractPost(request.user)
+            other_posts = ip.get_other_posts(article)
+            my_posts = ip.get_my_posts(article)
+            post_instance = ip.get_post_instance(article)
+            iua = InteractUserArticle(request.user)
+            like = iua.get_like(article)
             context = {
                 'article': article,
-                'posts': posts,
-                'form': PostForm(instance=post_instance)
+                'posts': other_posts,
+                'my_posts': my_posts,
+                'form': PostForm(instance=post_instance),
+                'like': like
             }
             return render(request, 'article_detail.html', context)
         else:
@@ -112,12 +119,35 @@ def article_detail(request, id):
             }
             return render(request, 'article_detail.html', context)
     else:
-        form = PostForm(request.POST)
-        if form.is_valid():
-            form.save()
+        iua = InteractUserArticle(request.user)
+        like = iua.get_like(article)
+        ip = InteractPost(request.user)
+        other_posts = ip.get_other_posts(article)
+        my_posts = ip.get_my_posts(article)
+        post_instance = ip.get_post_instance(article)
+        if 'post' in request.POST:
+            form = PostForm(request.POST)
+            if form.is_valid():
+                form.save()
+                context = {
+                    'article': article,
+                    'posts': other_posts,
+                    'my_posts': my_posts,
+                    'form': PostForm(instance=post_instance),
+                    'like': like,
+                }
+                return render(request, 'article_detail.html', context)
+        elif 'like' in request.POST:
+            if like:
+                iua.unlike(article)
+            else:
+                iua.like(article)
+            like = iua.get_like(article)
             context = {
                 'article': article,
-                'posts': posts,
-                'form': PostForm(instance=post_instance)
+                'posts': other_posts,
+                'my_posts': my_posts,
+                'form': PostForm(instance=post_instance),
+                'like': like,
             }
             return render(request, 'article_detail.html', context)

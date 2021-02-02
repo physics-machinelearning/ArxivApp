@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 
 class Article(models.Model):
@@ -44,3 +45,5 @@ class Post(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
     content = models.TextField()
+
+    commented_at = models.DateField(default=timezone.now)
