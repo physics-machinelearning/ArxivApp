@@ -50,7 +50,8 @@ class InteractArticle:
         return article
 
     def get_articles(self, category):
-        articles = Article.objects.filter(big_cat=category).all()
+        articles = Article.objects.filter(big_cat=category).order_by('published')
+        articles = articles.all()
         return articles
 
     def search_articles(self, keyword, start, end, author):

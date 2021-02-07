@@ -17,25 +17,27 @@
             <div id="content"　class=“bg-primary”>
 
                 <!-- topbar -->
+                {% include "_topbar.html" %}
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1><a href="{% url 'category' %}">ArxivApp</a></h1>
-                    </div>
                     
                     <!-- Content Row -->
                     <form method="POST">
                         <div class="form-group">
-                            <div class="row">
-                                <div class="col-3">
-                                    {% csrf_token %}
-                                    {{ form.as_p }}
-                                </div>
-                                <div class="col-3">
-                                    <button type="submit">Search</button>
+                            <div class="card" style="width: 30rem;">
+                                <div class="row">
+                                    <div class="col-8">
+                                        {% csrf_token %}
+                                        {{ form.as_p }}
+                                    </div>
+                                    <div class="col-4">
+                                        <button type="submit" class="btn btn-lg btn-primary">
+                                            Search
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

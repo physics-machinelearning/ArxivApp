@@ -24,7 +24,6 @@ def login_page(request):
             return render(request, 'login.html')
 
 
-
 def register(request):
     if request.method == 'GET':
         return render(request, 'register.html')
@@ -60,7 +59,15 @@ def article_list(request, category):
     if request.method == 'GET':
         form = ArticleSearchForm()
         ia = InteractArticle()
-        queryset = ia.get_articles(category)
+        if 'queryset' in request.session and 'category' in request.session:
+            if category == request.session['category']:
+                queryset = request.session['queryset']
+                request_post = request.session['form']
+                form = ArticleSearchForm(request_post)
+            else:
+                queryset = ia.get_articles(category)
+        else:
+            queryset = ia.get_articles(category)
         paginator = Paginator(queryset, num)
         page_int = request.GET.get('page', 1)
         page = paginator.get_page(page_int)
@@ -83,6 +90,8 @@ def article_list(request, category):
             for article in articles:
                 article['published'] = str(article['published'])
             request.session['queryset'] = articles
+            request.session['category'] = category
+            request.session['form'] = request.POST
             paginator = Paginator(articles, num)
             page_int = 1
             page = paginator.get_page(page_int)
