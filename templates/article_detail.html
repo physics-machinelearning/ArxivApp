@@ -55,7 +55,9 @@
                                     <ul>
                                         <form method="POST">
                                             {% csrf_token %}
-                                            <button type="submit" name="like">Like</button>
+                                            <button type="submit" name="like" class="btn btn-secondary btn-lg">
+                                                Like
+                                            </button>
                                         </form>
                                     </ul>
                                     {% endif %}
@@ -71,7 +73,9 @@
                                         {{ form.user.as_hidden }}
                                     </div>
                                     <div class="form-group">
-                                        <button type="submit" name="post">Post</button>
+                                        <button type="submit" name="post" class="btn btn-secondary btn-lg">
+                                            Post
+                                        </button>
                                     </div>
                                 </form>
                             </div>
