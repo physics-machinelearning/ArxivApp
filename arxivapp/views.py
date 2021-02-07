@@ -166,6 +166,18 @@ def article_detail(request, id):
                 'like': like,
             }
             return render(request, 'article_detail.html', context)
+        elif 'delete' in request.POST:
+            count = request.POST['delete']
+            count = int(count)
+            ip.delete_post(count, article)
+            context = {
+                'article': article,
+                'posts': other_posts,
+                'my_posts': my_posts,
+                'form': PostForm(instance=post_instance),
+                'like': like,
+            }
+            return render(request, 'article_detail.html', context)
 
 
 def my_post_page(request):

@@ -92,6 +92,14 @@
                                         commented at {{ post.commented_at }}<br>
                                         commented by {{ post.user.username }}
                                     </ul>
+                                    <ul>
+                                        <form method="POST">
+                                            {% csrf_token %}
+                                            <button type="submit" name="delete" value="{{ forloop.counter0 }}" class="btn btn-secondary btn-smg">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </ul>
                                 </div>
                             </div>
                             {% endfor %}

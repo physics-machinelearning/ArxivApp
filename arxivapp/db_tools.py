@@ -107,6 +107,12 @@ class InteractPost:
             i += 1
         return articles
 
+    def delete_post(self, count, article):
+        posts = self.get_my_posts(article)
+        post_id = posts[count].id
+        post = Post.objects.get(id=post_id)
+        post.delete()
+
     def get_other_posts(self, article):
         posts = Post.objects\
             .filter(article=article).exclude(user=self.user).all()
