@@ -14,6 +14,11 @@
     </div>
     <ul class="navbar-nav ml-auto">
         <ul>
+            <a href="{% url 'logout' %}">
+                <button type="button" class="btn btn-success btn-lg">
+                    logout
+                </button>
+            </a>
             <a href="{% url 'my_post_page' %}">
                 <button type="button" class="btn btn-secondary btn-lg">
                     Articles you commented

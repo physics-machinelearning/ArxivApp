@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
+from django.contrib.auth import logout
 
 from arxivapp.config import CATEGORIES
 from arxivapp.db_tools import (
@@ -22,6 +23,11 @@ def login_page(request):
             return redirect('category')
         else:
             return render(request, 'login.html')
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
 
 
 def register(request):
