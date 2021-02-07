@@ -15,9 +15,10 @@ def login_page(request):
     if request.method == 'GET':
         return render(request, 'login.html')
     elif request.method == 'POST':
+        username = request.POST.get('username')
         email = request.POST.get('email')
         password = request.POST.get('password')
-        user = authenticate(username=email, password=password)
+        user = authenticate(username=username, email=email, password=password)
         if user is not None:
             login(request, user)
             return redirect('category')
@@ -34,15 +35,17 @@ def register(request):
     if request.method == 'GET':
         return render(request, 'register.html')
     elif request.method == 'POST':
+        username = request.POST.get('username')
         email = request.POST.get('email')
         password = request.POST.get('password')
         confirm_password = request.POST.get('password')
         if email and password and confirm_password:
             if password == confirm_password:
-                user = authenticate(username=email, password=password)
+                user = authenticate(username=username, email=email, password=password)
                 if user is None:
                     user = User.objects.create_user(
-                        username=email,
+                        username=username,
+                        email=email,
                         password=password
                     )
                     user.save()

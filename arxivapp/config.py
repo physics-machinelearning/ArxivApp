@@ -45,7 +45,7 @@ CATEGORIES = {
         'math.HO', 'math.IT', 'math.KT', 'math.LO', 'math.MG',
         'math.MP', 'math.NA', 'math.NT', 'math.OA', 'math.OC',
         'math.PR', 'math.QA', 'math.RA', 'math.RT', 'math.SG',
-        'math.SP', 'math.ST', 'math-ph
+        'math.SP', 'math.ST', 'math-ph',
     ],
     'Nonlinear Sciences': [
         'nlin.AO', 'nlin.CD', 'nlin.CG', 'nlin.PS', 'nlin.SI'
