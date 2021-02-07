@@ -48,6 +48,9 @@
                                     <ul>
                                         <a href="{{ item.arxiv_url }}">url</a>
                                     </ul>
+                                    <ul>
+                                        {{ like_num }} like
+                                    </ul>
                                     {% if user.is_authenticated %}
                                     {% if like %}
                                     <ul>liked</ul>
@@ -55,7 +58,9 @@
                                     <ul>
                                         <form method="POST">
                                             {% csrf_token %}
-                                            <button type="submit" name="like">Like</button>
+                                            <button type="submit" name="like" class="btn btn-secondary btn-lg">
+                                                Like
+                                            </button>
                                         </form>
                                     </ul>
                                     {% endif %}
@@ -71,7 +76,9 @@
                                         {{ form.user.as_hidden }}
                                     </div>
                                     <div class="form-group">
-                                        <button type="submit" name="post">Post</button>
+                                        <button type="submit" name="post" class="btn btn-secondary btn-lg">
+                                            Post
+                                        </button>
                                     </div>
                                 </form>
                             </div>
@@ -87,6 +94,14 @@
                                     <ul>
                                         commented at {{ post.commented_at }}<br>
                                         commented by {{ post.user.username }}
+                                    </ul>
+                                    <ul>
+                                        <form method="POST">
+                                            {% csrf_token %}
+                                            <button type="submit" name="delete" value="{{ forloop.counter0 }}" class="btn btn-secondary btn-smg">
+                                                Delete
+                                            </button>
+                                        </form>
                                     </ul>
                                 </div>
                             </div>

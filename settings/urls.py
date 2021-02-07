@@ -18,14 +18,17 @@ from django.urls import path
 
 from arxivapp.views import (
     category_list, article_list, article_detail, login_page,
-    register
+    register, my_post_page, my_like_page, logout_view
 )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', login_page, name='login'),
+    path('logout/', logout_view, name="logout"),
     path('register/', register, name='register'),
     path('', category_list, name='category'),
     path('articles/<category>', article_list, name='articles'),
     path('article/<id>', article_detail, name='article_detail'),
+    path('mypostpage/', my_post_page, name='my_post_page'),
+    path('mylikepage/', my_like_page, name='my_like_page')
 ]

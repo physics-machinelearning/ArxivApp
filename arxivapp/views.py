@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
+from django.contrib.auth import logout
 
 from arxivapp.config import CATEGORIES
 from arxivapp.db_tools import (
@@ -23,6 +24,10 @@ def login_page(request):
         else:
             return render(request, 'login.html')
 
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
 
 
 def register(request):
@@ -60,7 +65,15 @@ def article_list(request, category):
     if request.method == 'GET':
         form = ArticleSearchForm()
         ia = InteractArticle()
-        queryset = ia.get_articles(category)
+        if 'queryset' in request.session and 'category' in request.session:
+            if category == request.session['category']:
+                queryset = request.session['queryset']
+                request_post = request.session['form']
+                form = ArticleSearchForm(request_post)
+            else:
+                queryset = ia.get_articles(category)
+        else:
+            queryset = ia.get_articles(category)
         paginator = Paginator(queryset, num)
         page_int = request.GET.get('page', 1)
         page = paginator.get_page(page_int)
@@ -83,6 +96,8 @@ def article_list(request, category):
             for article in articles:
                 article['published'] = str(article['published'])
             request.session['queryset'] = articles
+            request.session['category'] = category
+            request.session['form'] = request.POST
             paginator = Paginator(articles, num)
             page_int = 1
             page = paginator.get_page(page_int)
@@ -104,23 +119,29 @@ def article_detail(request, id):
             post_instance = ip.get_post_instance(article)
             iua = InteractUserArticle(request.user)
             like = iua.get_like(article)
+            like_num = iua.get_like_num(article)
             context = {
                 'article': article,
                 'posts': other_posts,
                 'my_posts': my_posts,
                 'form': PostForm(instance=post_instance),
-                'like': like
+                'like': like,
+                'like_num': like_num
             }
             return render(request, 'article_detail.html', context)
         else:
+            iua = InteractUserArticle(None)
+            like_num = iua.get_like_num(article)
             context = {
                 'article': article,
-                'form': PostForm()
+                'form': PostForm(),
+                'like_num': like_num
             }
             return render(request, 'article_detail.html', context)
     else:
         iua = InteractUserArticle(request.user)
         like = iua.get_like(article)
+        like_num = iua.get_like_num(article)
         ip = InteractPost(request.user)
         other_posts = ip.get_other_posts(article)
         my_posts = ip.get_my_posts(article)
@@ -135,6 +156,7 @@ def article_detail(request, id):
                     'my_posts': my_posts,
                     'form': PostForm(instance=post_instance),
                     'like': like,
+                    'like_num': like_num,
                 }
                 return render(request, 'article_detail.html', context)
         elif 'like' in request.POST:
@@ -143,11 +165,54 @@ def article_detail(request, id):
             else:
                 iua.like(article)
             like = iua.get_like(article)
+            like_num = iua.get_like_num(article)
             context = {
                 'article': article,
                 'posts': other_posts,
                 'my_posts': my_posts,
                 'form': PostForm(instance=post_instance),
                 'like': like,
+                'like_num': like_num,
             }
             return render(request, 'article_detail.html', context)
+        elif 'delete' in request.POST:
+            count = request.POST['delete']
+            count = int(count)
+            ip.delete_post(count, article)
+            context = {
+                'article': article,
+                'posts': other_posts,
+                'my_posts': my_posts,
+                'form': PostForm(instance=post_instance),
+                'like': like,
+                'like_num': like_num,
+            }
+            return render(request, 'article_detail.html', context)
+
+
+def my_post_page(request):
+    num = 10
+    if request.method == 'GET':
+        ip = InteractPost(request.user)
+        articles = ip.get_my_articles()
+        paginator = Paginator(articles, num)
+        page_int = request.GET.get('page', 1)
+        page = paginator.get_page(page_int)
+        context = {
+            'articles': page
+        }
+        return render(request, 'my_page.html', context)
+
+
+def my_like_page(request):
+    num = 10
+    if request.method == 'GET':
+        iua = InteractUserArticle(request.user)
+        articles = iua.get_liked_articles()
+        paginator = Paginator(articles, num)
+        page_int = request.GET.get('page', 1)
+        page = paginator.get_page(page_int)
+        context = {
+            'articles': page
+        }
+        return render(request, 'my_page.html', context)

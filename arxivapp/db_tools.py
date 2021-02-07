@@ -50,7 +50,8 @@ class InteractArticle:
         return article
 
     def get_articles(self, category):
-        articles = Article.objects.filter(big_cat=category).all()
+        articles = Article.objects.filter(big_cat=category).order_by('published')
+        articles = articles.all()
         return articles
 
     def search_articles(self, keyword, start, end, author):
@@ -90,6 +91,28 @@ class InteractPost:
         ).all()
         return posts
 
+    def get_my_articles(self):
+        posts = Post.objects.filter(
+            user=self.user
+        ).all()
+        articles = [post.article for post in posts]
+        i = 0
+        while True:
+            article = articles[i]
+            if article in articles[:i]:
+                articles.pop(i)
+                i -= 1
+            if i == len(articles)-1:
+                break
+            i += 1
+        return articles
+
+    def delete_post(self, count, article):
+        posts = self.get_my_posts(article)
+        post_id = posts[count].id
+        post = Post.objects.get(id=post_id)
+        post.delete()
+
     def get_other_posts(self, article):
         posts = Post.objects\
             .filter(article=article).exclude(user=self.user).all()
@@ -101,6 +124,10 @@ class InteractPost:
             user=self.user
         )
         return post_instance
+    
+    def get_post_num(self, article):
+        posts = Post.objects.filter(article=article)
+        return len(posts)
 
 
 class InteractUserArticle:
@@ -117,6 +144,13 @@ class InteractUserArticle:
         else:
             return False
 
+    def get_liked_articles(self):
+        uas = UserArticle.objects.filter(
+            user=self.user
+        ).all()
+        articles = [ua.article for ua in uas]
+        return articles
+
     def like(self, article):
         ua = UserArticle(
             article=article,
@@ -130,3 +164,12 @@ class InteractUserArticle:
             user=self.user
         )
         ua.delete()
+    
+    def get_like_num(self, article):
+        uas = UserArticle.objects.filter(
+            article=article
+        ).all()
+        if uas:
+            return len(uas)
+        else:
+            return 0
