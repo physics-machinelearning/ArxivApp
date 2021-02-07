@@ -119,23 +119,29 @@ def article_detail(request, id):
             post_instance = ip.get_post_instance(article)
             iua = InteractUserArticle(request.user)
             like = iua.get_like(article)
+            like_num = iua.get_like_num(article)
             context = {
                 'article': article,
                 'posts': other_posts,
                 'my_posts': my_posts,
                 'form': PostForm(instance=post_instance),
-                'like': like
+                'like': like,
+                'like_num': like_num
             }
             return render(request, 'article_detail.html', context)
         else:
+            iua = InteractUserArticle(None)
+            like_num = iua.get_like_num(article)
             context = {
                 'article': article,
-                'form': PostForm()
+                'form': PostForm(),
+                'like_num': like_num
             }
             return render(request, 'article_detail.html', context)
     else:
         iua = InteractUserArticle(request.user)
         like = iua.get_like(article)
+        like_num = iua.get_like_num(article)
         ip = InteractPost(request.user)
         other_posts = ip.get_other_posts(article)
         my_posts = ip.get_my_posts(article)
@@ -150,6 +156,7 @@ def article_detail(request, id):
                     'my_posts': my_posts,
                     'form': PostForm(instance=post_instance),
                     'like': like,
+                    'like_num': like_num,
                 }
                 return render(request, 'article_detail.html', context)
         elif 'like' in request.POST:
@@ -158,12 +165,14 @@ def article_detail(request, id):
             else:
                 iua.like(article)
             like = iua.get_like(article)
+            like_num = iua.get_like_num(article)
             context = {
                 'article': article,
                 'posts': other_posts,
                 'my_posts': my_posts,
                 'form': PostForm(instance=post_instance),
                 'like': like,
+                'like_num': like_num,
             }
             return render(request, 'article_detail.html', context)
         elif 'delete' in request.POST:
@@ -176,6 +185,7 @@ def article_detail(request, id):
                 'my_posts': my_posts,
                 'form': PostForm(instance=post_instance),
                 'like': like,
+                'like_num': like_num,
             }
             return render(request, 'article_detail.html', context)
 

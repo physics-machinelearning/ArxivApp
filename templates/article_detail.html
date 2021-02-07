@@ -48,6 +48,9 @@
                                     <ul>
                                         <a href="{{ item.arxiv_url }}">url</a>
                                     </ul>
+                                    <ul>
+                                        {{ like_num }} like
+                                    </ul>
                                     {% if user.is_authenticated %}
                                     {% if like %}
                                     <ul>liked</ul>

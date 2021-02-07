@@ -124,6 +124,10 @@ class InteractPost:
             user=self.user
         )
         return post_instance
+    
+    def get_post_num(self, article):
+        posts = Post.objects.filter(article=article)
+        return len(posts)
 
 
 class InteractUserArticle:
@@ -160,3 +164,12 @@ class InteractUserArticle:
             user=self.user
         )
         ua.delete()
+    
+    def get_like_num(self, article):
+        uas = UserArticle.objects.filter(
+            article=article
+        ).all()
+        if uas:
+            return len(uas)
+        else:
+            return 0
